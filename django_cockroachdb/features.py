@@ -183,6 +183,15 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # unexpected partial unique index in pg_constraint query:
             # https://github.com/cockroachdb/cockroach/issues/61098
             'introspection.tests.IntrospectionTests.test_get_constraints_unique_indexes_orders',
+            # ProgrammingError: value type float doesn't match type decimal of
+            # column "n2":
+            # INSERT INTO "db_functions_decimalmodel" ("n1", "n2") VALUES ( -5.75, PI())
+            'db_functions.math.test_round.RoundTests.test_decimal_with_precision',
+            # CockroachDB behaves differently?
+            'db_functions.math.test_round.RoundTests.test_integer_with_negative_precision',
+            # interval division with float rounds differently from Python.
+            # https://github.com/cockroachdb/cockroach/issues/66118
+            'expressions.tests.FTimeDeltaTests.test_durationfield_multiply_divide',
         })
         if not self.connection.features.is_cockroachdb_21_1:
             expected_failures.update({
