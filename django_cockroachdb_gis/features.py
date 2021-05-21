@@ -55,5 +55,8 @@ class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
             # Unsupported ~= (https://github.com/cockroachdb/cockroach/issues/57096)
             # and @ operators (https://github.com/cockroachdb/cockroach/issues/56124).
             'gis_tests.geogapp.tests.GeographyTest.test04_invalid_operators_functions',
+            # This test assumes the GEOS version used by the database and
+            # Django are the same which isn't the case on CI.
+            'gis_tests.geos_tests.test_geos.GEOSTest.test_emptyCollections',
         })
         return expected_failures
