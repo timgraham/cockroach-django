@@ -81,6 +81,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         return self.connection.cockroachdb_version >= (21, 1)
 
     @cached_property
+    def is_cockroachdb_21_2(self):
+        return self.connection.cockroachdb_version >= (21, 2)
+
+    @cached_property
     def django_test_expected_failures(self):
         expected_failures = super().django_test_expected_failures
         expected_failures.update({
@@ -189,10 +193,14 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'db_functions.math.test_round.RoundTests.test_decimal_with_precision',
             # CockroachDB behaves differently?
             'db_functions.math.test_round.RoundTests.test_integer_with_negative_precision',
-            # interval division with float rounds differently from Python.
-            # https://github.com/cockroachdb/cockroach/issues/66118
-            'expressions.tests.FTimeDeltaTests.test_durationfield_multiply_divide',
+
         })
+        if not self.connection.features.is_cockroachdb_21_2:
+            expected_failures.update({
+                # interval division with float rounds differently from Python.
+                # https://github.com/cockroachdb/cockroach/issues/66118
+                'expressions.tests.FTimeDeltaTests.test_durationfield_multiply_divide',
+            })
         if not self.connection.features.is_cockroachdb_21_1:
             expected_failures.update({
                 # unimplemented: unable to encode JSON as a table key:

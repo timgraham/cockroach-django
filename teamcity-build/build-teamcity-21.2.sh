@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -x
 
-# Not supported
+./teamcity-build/build-teamcity.sh "LATEST"
